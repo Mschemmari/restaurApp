@@ -30,14 +30,14 @@ const App = () => {
     setTimeout(() => {
       setLoading(false);
     }, 2000);
-  }, []);
 
+  }, [loading]);
 
-  const handleChange = (search) => {
-    // const newQuery = search
-    console.log(search, 'aaaaa');
-    // if (newQuery.startsWith(' ')) return
-    updateSearch(search)
+  const handleChange = (event) => {
+    const newQuery = event.nativeEvent.text
+    console.log(newQuery);
+    if (newQuery.startsWith(' ')) return
+    updateSearch(newQuery)
   }
 
   return (
@@ -46,21 +46,22 @@ const App = () => {
         ? <SplashScreen />
         : <>
           <Text style={styles.sectionTitle}>RestaurApp</Text>
-          <ScrollView>
-            <View style={styles.sectionContainer}>
-              <TextInput
-                style={styles.input}
-                placeholder='Don Julio, El preferido, Kansas...'
-                value={search}
-                placeholderTextColor='white'
-                onChange={handleChange}
-                name='search'
-              />
-              <TouchableOpacity style={styles.button} >
-                <Text style={styles.buttonText}>Buscar</Text>
-              </TouchableOpacity>
+          <View style={styles.sectionContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder='Don Julio, El preferido, Kansas...'
+              value={search}
+              placeholderTextColor='white'
+              onChange={handleChange}
+              name='search'
+            />
+            <TouchableOpacity style={styles.button} >
+              <Text style={styles.buttonText}>Buscar</Text>
+            </TouchableOpacity>
 
-            </View>
+          </View>
+          <ScrollView>
+
             <View style={styles.itemContainer}>
               {restaurants.results.map(rest =>
                 <>
@@ -102,16 +103,14 @@ const styles = StyleSheet.create({
     width: windowWidth,
 
   },
+  // SECTION CONTAINER
   sectionContainer: {
-    display: 'flex',
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     marginVertical: 15,
     marginHorizontal: 15,
     gap: 10,
   },
-
   sectionTitle: {
     textAlign: 'center',
     marginTop: 30,
@@ -147,7 +146,7 @@ const styles = StyleSheet.create({
     width: 100,
   },
 
-  //item styles
+  //ITEM STYLES
   itemContainer: {
     marginHorizontal: 20,
   },
