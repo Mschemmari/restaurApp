@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearch } from './lib/hooks/useSearch'
+import { useRestaurants } from './lib/hooks/useRestaurants'
 import {
   SafeAreaView,
   ScrollView,
@@ -13,7 +14,7 @@ import {
 } from 'react-native';
 import { SplashScreen } from './lib/components/SplashScreen'
 import restaurants from './lib/mocks/results.json'
-// const API_KEY = 'AIzaSyBuwvMIUfuI5y4RBYDE1W2lvgbsgR0jJV4'
+
 // const getIcon = ({ name, icon_mask_base_uri, icon_background_color, }) =>
 //   `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=skog%20haus&inputtype=textquery&fields=${name},${icon_mask_base_uri},${icon_background_color}&key=${API_KEY}`
 const windowWidth = Dimensions.get('window').width;
@@ -23,37 +24,44 @@ const windowHeight = Dimensions.get('window').height;
 
 
 const App = () => {
-  const [loading, setLoading] = useState(true);
+  const [splasScreen, setSplashScreen] = useState(true);
   const [search, updateSearch, error] = useSearch()
+  // const { restaurants, loading, getRestaurants } = useRestaurants({ search })
 
   useEffect(() => {
     setTimeout(() => {
-      setLoading(false);
+      setSplashScreen(false);
     }, 2000);
 
-  }, [loading]);
+  }, [splasScreen]);
 
-  const handleChange = (event) => {
-    const newQuery = event.nativeEvent.text
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    getMovies()
+  }
+
+  const handleChange = (e) => {
+    const newQuery = e.nativeEvent.text
     console.log(newQuery);
     if (newQuery.startsWith(' ')) return
     updateSearch(newQuery)
   }
 
+
   return (
     <SafeAreaView style={styles.container}>
-      {loading
+      {splasScreen
         ? <SplashScreen />
         : <>
           <Text style={styles.sectionTitle}>RestaurApp</Text>
           <View style={styles.sectionContainer}>
             <TextInput
               style={styles.input}
-              placeholder='Don Julio, El preferido, Kansas...'
-              value={search}
               placeholderTextColor='white'
-              onChange={handleChange}
+              placeholder='Don Julio, El preferido, Kansas...'
               name='search'
+              value={search}
+              onChange={handleChange}
             />
             <TouchableOpacity style={styles.button} >
               <Text style={styles.buttonText}>Buscar</Text>
@@ -61,14 +69,15 @@ const App = () => {
 
           </View>
           <ScrollView>
-
             <View style={styles.itemContainer}>
               {restaurants.results.map(rest =>
                 <>
                   <View style={styles.item} >
                     <Text style={styles.itemText}>{rest.name}</Text>
-                    <Text style={styles.itemText}>{rest.formatted_address}</Text>
+                    <Text style={styles.itemText}>{rest.formatted_address}
+                    </Text>
                   </View>
+
                   {/* {console.log(getIcon(
                     rest.icon,
                     rest.icon_background_color,
